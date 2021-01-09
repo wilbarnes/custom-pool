@@ -368,10 +368,10 @@ impl<'a, 'b> PoolContext<'a, 'b> {
         round_up: bool,
     ) -> Result<Basket, ProgramError> {
         let total_pool_tokens = self.total_pool_tokens()?;
-        if total_pool_tokens == 0 {
-            msg!("Pool is empty");
-            return Err(ProgramError::InvalidArgument);
-        }
+        // if total_pool_tokens == 0 {
+        //     msg!("Pool is empty");
+        //     return Err(ProgramError::InvalidArgument);
+        // }
         let basket_quantities: Option<Vec<i64>> = self
             .pool_asset_quantities()?
             .iter()
