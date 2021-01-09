@@ -7,7 +7,7 @@ use solana_program::pubkey::Pubkey;
 
 /// Wrapper around `solana_sdk::pubkey::Pubkey` so it can implement `BorshSerialize` etc.
 #[repr(transparent)]
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Clone, Default, PartialEq, Eq)]
 pub struct Address(Pubkey);
 
 impl From<Address> for Pubkey {
