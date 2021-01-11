@@ -96,6 +96,7 @@ impl<'a, 'b> PoolContext<'a, 'b> {
             spl_token_program: None,
             account_params: None,
             custom_accounts: &[],
+            custom_data: request.custom_data,
         };
 
         check_account_address(context.pool_token_mint, &state.pool_token_mint)?;
