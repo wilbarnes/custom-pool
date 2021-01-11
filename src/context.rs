@@ -48,6 +48,9 @@ pub struct PoolContext<'a, 'b> {
 
     /// Any additional accounts that were passed into the instruction.
     pub custom_accounts: &'a [AccountInfo<'b>],
+
+    /// Any additional data that were passed into the instruction.
+    pub custom_data: Vec<u8>,
 }
 
 pub struct UserAccounts<'a, 'b> {
