@@ -97,7 +97,7 @@ impl<'a, 'b> PoolContext<'a, 'b> {
             account_params: None,
             custom_accounts: &[],
             custom_data: match request {
-                PoolRequestInner(X) => x.custom_data,
+                PoolRequestInner(x) => x.custom_data,
                 _ => vec![],
             },
         };
