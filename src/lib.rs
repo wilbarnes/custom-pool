@@ -16,7 +16,7 @@ use spl_token::state::Account as TokenAccount;
 pub use serum_pool_schema as schema;
 use serum_pool_schema::{
     AssetInfo, InitializePoolRequest, PoolAction, PoolRequest, PoolRequestInner, PoolRequestTag,
-    PoolState, FEE_RATE_DENOMINATOR, MIN_FEE_RATE,
+    PoolState,
 };
 
 pub use crate::context::PoolContext;
@@ -187,9 +187,6 @@ impl<'a, 'b, P: Pool> PoolProcessor<'a, 'b, P> {
                 .collect::<PoolResult<Vec<_>>>()?,
             vault_signer: vault_signer.key.into(),
             vault_signer_nonce: request.vault_signer_nonce,
-            lqd_fee_vault: lqd_fee_vault.key.into(),
-            initializer_fee_vault: initializer_fee_vault.key.into(),
-            fee_rate: request.fee_rate,
             account_params: vec![],
             name: request.pool_name.clone(),
             admin_key: None,
@@ -209,14 +206,6 @@ impl<'a, 'b, P: Pool> PoolProcessor<'a, 'b, P> {
         P::initialize_pool(&context, &mut state)?;
         if *context.pool_authority.key != context.derive_vault_authority(&state)? {
             msg!("Invalid pool authority");
-            return Err(ProgramError::InvalidArgument);
-        }
-        if state.fee_rate < MIN_FEE_RATE {
-            msg!("Fee too low");
-            return Err(ProgramError::InvalidArgument);
-        }
-        if state.fee_rate >= FEE_RATE_DENOMINATOR {
-            msg!("Fee too high");
             return Err(ProgramError::InvalidArgument);
         }
         self.save_state(&state)?;

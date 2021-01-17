@@ -99,14 +99,6 @@ pub struct PoolState {
     /// User-friendly pool name.
     pub name: String,
 
-    /// Vault for fees collected by the pool for LQD. Mint is the pool token mint.
-    pub lqd_fee_vault: Address,
-    /// Vault for fees collected by the pool for the pool initializer. Mint is the pool token mint.
-    pub initializer_fee_vault: Address,
-
-    /// Fee on creations and redemptions, per million tokens.
-    pub fee_rate: u32,
-
     /// Meaning depends on the pool implementation.
     pub admin_key: Option<Address>,
 

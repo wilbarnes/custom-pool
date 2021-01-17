@@ -48,7 +48,6 @@ pub trait Pool {
     ) -> Result<(), ProgramError> {
         let basket = Self::get_creation_basket(context, state, creation_size)?;
         context.transfer_basket_from_user(&basket)?;
-        context.mint_tokens(state, creation_size)?;
         Ok(())
     }
 
@@ -57,10 +56,7 @@ pub trait Pool {
         state: &mut PoolState,
         redemption_size: u64,
     ) -> Result<(), ProgramError> {
-        let fees = context.get_fees(state, redemption_size)?;
-        let redemption_size = redemption_size - fees.total_fee();
         let basket = Self::get_redemption_basket(context, state, redemption_size)?;
-        context.burn_tokens_and_collect_fees(redemption_size, fees)?;
         context.transfer_basket_to_user(state, &basket)?;
         Ok(())
     }
