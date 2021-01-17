@@ -391,7 +391,47 @@ impl<'a, 'b> PoolContext<'a, 'b> {
 
         Ok(())
     }
+
+    pub fn mint_tokens(
+        &self,
+        state: &PoolState,
+        quantity: u64
+    ) -> Result<(), ProgramError> {
+        let user_accounts = self
+            .user_accounts
+            .as_ref()
+            .ok_or(ProgramError::InvalidArgument)?;
+        let spl_token_program = self
+            .spl_token_program
+            .ok_or(ProgramError::InvalidArgument)?;
+
+        let mint_pubkey = self.pool_token_mint.key;
+        let account_pubkey = user_accounts.pool_token_account.key;
+        let owner_pubkey = self.pool_authority.key;
+        let signer_pubkeys = &[];
+
+        let instruction = spl_token::instruction::mint_to(
+            &spl_token::ID,
+            mint_pubkey,
+            account_pubkey,
+            owner_pubkey,
+            signer_pubkeys,
+            quantity,
+        )?;
+
+        let account_infos = &[
+            user_accounts.pool_token_account.clone(),
+            self.pool_token_mint.clone(),
+            self.pool_authority.clone(),
+            spl_token_program.clone()
+        ];
+
+        program::invoke(&instruction, account_infos)?;
+
+        Ok(())
+    }
 }
+
 
 fn check_account_address(account: &AccountInfo, address: &Address) -> Result<(), ProgramError> {
     if account.key != address.as_ref() {

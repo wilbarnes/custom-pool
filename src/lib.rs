@@ -169,8 +169,6 @@ impl<'a, 'b, P: Pool> PoolProcessor<'a, 'b, P> {
         let pool_token_mint = next_account_info(accounts_iter)?;
         let pool_vaults = next_account_infos(accounts_iter, request.assets_length as usize)?;
         let vault_signer = next_account_info(accounts_iter)?;
-        let lqd_fee_vault = next_account_info(accounts_iter)?;
-        let initializer_fee_vault = next_account_info(accounts_iter)?;
 
         let mut state = PoolState {
             tag: Default::default(),
@@ -199,9 +197,6 @@ impl<'a, 'b, P: Pool> PoolProcessor<'a, 'b, P> {
         for vault_account in context.pool_vault_accounts {
             context.check_rent_exemption(vault_account)?;
         }
-        context.check_rent_exemption(lqd_fee_vault)?;
-        self.check_lqd_fee_account(&state, lqd_fee_vault)?;
-        context.check_rent_exemption(initializer_fee_vault)?;
 
         P::initialize_pool(&context, &mut state)?;
         if *context.pool_authority.key != context.derive_vault_authority(&state)? {
@@ -209,29 +204,6 @@ impl<'a, 'b, P: Pool> PoolProcessor<'a, 'b, P> {
             return Err(ProgramError::InvalidArgument);
         }
         self.save_state(&state)?;
-        Ok(())
-    }
-
-    fn check_lqd_fee_account(
-        &self,
-        state: &PoolState,
-        account: &AccountInfo,
-    ) -> Result<(), ProgramError> {
-        let token_account = TokenAccount::unpack(&account.try_borrow_data()?)?;
-        if token_account.owner != serum_pool_schema::fee_owner::ID {
-            msg!("Incorrect fee account owner");
-            return Err(ProgramError::InvalidArgument);
-        }
-        if token_account.delegate.is_some() {
-            msg!("Incorrect fee account delegate");
-            return Err(ProgramError::InvalidArgument);
-        }
-        if token_account.close_authority.is_some()
-            && token_account.close_authority.as_ref() != COption::Some(state.vault_signer.as_ref())
-        {
-            msg!("Incorrect fee account close authority");
-            return Err(ProgramError::InvalidArgument);
-        }
         Ok(())
     }
 }
