@@ -1,6 +1,6 @@
 [package]
 name = "serum-pool"
-version = "0.1.1"
+version = "0.1.2"
 description = "Solana pool spec"
 edition = "2018"
 
