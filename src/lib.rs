@@ -167,7 +167,6 @@ impl<'a, 'b, P: Pool> PoolProcessor<'a, 'b, P> {
         let accounts_iter = &mut self.accounts.into_iter();
         let _pool_account = next_account_info(accounts_iter)?;
         let pool_token_mint = next_account_info(accounts_iter)?;
-        // let pool_token_mint = next_account_info(accounts_iter)?;
         let pool_vaults = next_account_infos(accounts_iter, request.assets_length as usize)?;
         let vault_signer = next_account_info(accounts_iter)?;
 
